@@ -1,0 +1,166 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+
+struct Stack {
+    struct Node* top;
+};
+
+
+struct Queue {
+    struct Node* front;
+    struct Node* rear;
+};
+
+
+struct Node* createNode(int data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+
+
+
+void initializeStack(struct Stack* stack) {
+    stack->top = NULL;
+}
+
+
+void push(struct Stack* stack, int data) {
+    struct Node* newNode = createNode(data);
+    newNode->next = stack->top;
+    stack->top = newNode;
+    printf("%d pushed to stack\n", data);
+}
+
+
+int pop(struct Stack* stack) {
+    if (stack->top == NULL) {
+        printf("Stack is empty\n");
+        return -1;
+    }
+    struct Node* temp = stack->top;
+    int poppedData = temp->data;
+    stack->top = stack->top->next;
+    free(temp);
+    return poppedData;
+}
+
+
+int peek(struct Stack* stack) {
+    if (stack->top == NULL) {
+        printf("Stack is empty\n");
+        return -1;
+    }
+    return stack->top->data;
+}
+
+
+void displayStack(struct Stack* stack) {
+    if (stack->top == NULL) {
+        printf("Stack is empty\n");
+        return;
+    }
+    struct Node* temp = stack->top;
+    printf("Stack: ");
+    while (temp != NULL) {
+        printf("%d ", temp->data);
+        temp = temp->next;
+    }
+    printf("\n");
+}
+
+
+
+
+void initializeQueue(struct Queue* queue) {
+    queue->front = queue->rear = NULL;
+}
+
+
+void enqueue(struct Queue* queue, int data) {
+    struct Node* newNode = createNode(data);
+    if (queue->rear == NULL) {
+        queue->front = queue->rear = newNode;
+        return;
+    }
+    queue->rear->next = newNode;
+    queue->rear = newNode;
+    printf("%d enqueued to queue\n", data);
+}
+
+int dequeue(struct Queue* queue) {
+    if (queue->front == NULL) {
+        printf("Queue is empty\n");
+        return -1;
+    }
+    struct Node* temp = queue->front;
+    int dequeuedData = temp->data;
+    queue->front = queue->front->next;
+    if (queue->front == NULL) {
+        queue->rear = NULL;
+    }
+    free(temp);
+    return dequeuedData;
+}
+
+int front(struct Queue* queue) {
+    if (queue->front == NULL) {
+        printf("Queue is empty\n");
+        return -1;
+    }
+    return queue->front->data;
+}
+
+
+void displayQueue(struct Queue* queue) {
+    if (queue->front == NULL) {
+        printf("Queue is empty\n");
+        return;
+    }
+    struct Node* temp = queue->front;
+    printf("Queue: ");
+    while (temp != NULL) {
+        printf("%d ", temp->data);
+        temp = temp->next;
+    }
+    printf("\n");
+}
+
+int main() {
+
+    struct Stack stack;
+    initializeStack(&stack);
+    push(&stack, 10);
+    push(&stack, 20);
+    push(&stack, 30);
+    displayStack(&stack);
+
+    printf("Popped from stack: %d\n", pop(&stack));
+    displayStack(&stack);
+
+    printf("Top element of stack: %d\n", peek(&stack));
+
+
+    struct Queue queue;
+    initializeQueue(&queue);
+    enqueue(&queue, 100);
+    enqueue(&queue, 200);
+    enqueue(&queue, 300);
+    displayQueue(&queue);
+
+    printf("Dequeued from queue: %d\n", dequeue(&queue));
+    displayQueue(&queue);
+
+    printf("Front element of queue: %d\n", front(&queue));
+
+    return 0;
+}
